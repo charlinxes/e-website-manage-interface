@@ -23,21 +23,30 @@ const routes = [
         component: () => import('../views/Products.vue'),
       },
       {
+        path: 'orders',
+        name: 'Orders',
+        component: () => import('../views/Orders.vue'),
+      },
+      {
         path: 'coupons',
         name: 'Coupons',
         component: () => import('../views/Coupons.vue'),
       },
-    ],
-  },
-  { // 客戶端頁面
-    path: '/',
-    name: 'CustomerHome',
-    component: () => import('../views/Dashboard.vue'),
-    children: [
+      {
+        path: 'coupons',
+        name: 'Coupons',
+        component: () => import('../views/Coupons.vue'),
+      },
       {
         path: 'customer_orders',
         name: 'CustomerOrders',
         component: () => import('../views/CustomerOrders.vue'),
+      },
+      {
+        path: 'customer_checkout/:orderId',
+        name: 'CustomerCheckout',
+        component: () => import('../views/CustomerCheckout.vue'),
+        props: true,
       },
     ],
   },
