@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">HOLO 購物網後台</a>
+      <h1 class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-4" @click.prevent="toHome">HOLO 購物網後台</h1>
       <button class="navbar-toggler position-absolute d-md-none collapsed" type="button"
         data-bs-toggle="collapse" data-bs-target="#collapseMenu" aria-controls="sidebarMenu"
         aria-expanded="false" aria-label="Toggle navigation" id="collapseToggle">
@@ -57,11 +57,19 @@ export default {
   methods: {
     logout() {
       const api = `${process.env.VUE_APP_APIPATH}/logout`;
-      this.$http.post(api).then((response) => {
-        console.log(response.data);
+      this.$http.post(api).then(() => {
         this.$router.push({ path: '/login' });
       });
+    },
+    toHome() {
+      this.$router.push({ path: '/Products' });
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+  h1.navbar-brand {
+    cursor: pointer;
+  }
+</style>

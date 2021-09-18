@@ -1,29 +1,31 @@
 <template>
-  <main class="form-signin">
-    <form>
-      <h1 class="h3 mb-3 fw-normal">請登錄</h1>
-      <div class="form-floating">
-        <input type="email" class="form-control" id="floatingInput"
-          placeholder="name@example.com" v-model="user.username">
-        <label for="floatingInput">郵箱地址</label>
-      </div>
-      <div class="form-floating">
-        <input type="password" class="form-control" id="floatingPassword"
-          placeholder="Password" v-model="user.password">
-        <label for="floatingPassword">密碼</label>
-      </div>
-
-      <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me"> 記住我
-        </label>
-      </div>
-      <button class="w-100 btn btn-lg btn-primary" type="submit" @click.prevent="login">
-        登陸
-      </button>
-      <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
-    </form>
-  </main>
+  <div>
+    <h1 class="text-center mt-5">HOLO購物網後台</h1>
+    <main class="form-signin">
+      <form>
+        <h3 class="h3 mb-3 fw-normal">請登錄</h3>
+        <div class="form-floating">
+          <input type="email" class="form-control" :class="{'border-danger':showAlert}" id="floatingInput"
+            placeholder="name@example.com" v-model="user.username">
+          <label for="floatingInput">郵箱地址</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" class="form-control" :class="{'border-danger':showAlert}" id="floatingPassword"
+            placeholder="Password" v-model="user.password">
+          <label for="floatingPassword">密碼</label>
+        </div>
+        <div v-if="showAlert" class="text-danger mb-1">用戶名或密碼錯誤,請重新輸入</div>
+        <div class="checkbox mb-3">
+          <label>
+            <input type="checkbox" value="remember-me"> 記住我
+          </label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit" @click.prevent="login">
+          登陸 <font-awesome-icon v-if="isLoading" icon="spinner" spin/>
+        </button>
+      </form>
+    </main>
+  </div>
 </template>
 
 <script>
@@ -34,10 +36,13 @@ export default {
         username: '',
         password: '',
       },
+      showAlert: false,
+      isLoading: false,
     };
   },
   methods: {
     login() {
+      this.isLoading = true;
       const api = `${process.env.VUE_APP_APIPATH}/admin/signin`;
       this.$http.post(api, this.user).then((response) => {
         console.log(response.data);
@@ -48,8 +53,10 @@ export default {
           const { expired } = response.data;
           document.cookie = `hexToken = ${token}; expires = ${new Date(expired)}`;
           this.$router.push({ path: '/admin/products' });
+          this.isLoading = false;
         } else {
-          alert('用戶名或密碼錯誤');
+          this.showAlert = true;
+          this.isLoading = false;
         }
       });
     },
@@ -58,10 +65,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  html, body {
-    height: 100%;
-  }
-
   body {
     display: flex;
     align-items: center;

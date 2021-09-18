@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import axios from 'axios';
-// import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
 
@@ -16,6 +15,7 @@ const routes = [
     name: 'Admin',
     component: () => import('../views/Dashboard.vue'),
     meta: { requiresAuth: true },
+    redirect: { name: 'Products' },
     children: [
       {
         path: 'products',
@@ -41,12 +41,6 @@ const routes = [
         path: 'customer_orders',
         name: 'CustomerOrders',
         component: () => import('../views/CustomerOrders.vue'),
-      },
-      {
-        path: 'customer_checkout/:orderId',
-        name: 'CustomerCheckout',
-        component: () => import('../views/CustomerCheckout.vue'),
-        props: true,
       },
     ],
   },
