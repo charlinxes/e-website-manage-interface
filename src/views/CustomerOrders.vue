@@ -3,14 +3,12 @@
     <Loading :active.sync="isOuterLoading" loader="bars"></Loading>
     <div class="row mt-3">
       <div class="col-md-4 mb-4" v-for="item in filterProducts" :key="item.id">
-        <div class="card border-0 shadow-sm">
+        <div class="card border-0 shadow">
           <div :style="{'background-image': `url(${item.imageUrl})`}"
             style="background-size: cover; background-position: center" class="bg-img-height"></div>
           <div class="card-body">
-            <span class="badge badge-secondary float-end ml-2">{{item.category}}</span>
-            <h5 class="card-title">
-              <a href="#" class="text-dark">{{item.tittle}}</a>
-            </h5>
+            <span class="badge bg-secondary float-end ml-2">{{item.category}}</span>
+            <h5 class="card-title h4">{{item.title}}</h5>
             <p class="card-text">{{item.content}}</p>
             <div class="h4" v-if="item.price == item.origin_price">{{ item.origin_price | currencyFilter }} 元</div>
             <div class="d-flex justify-content-between align-items-baseline" v-else>
@@ -41,7 +39,6 @@
             <img :src="product.imageUrl" class="img-fluid" alt="">
             <blockquote class="blockquote mt-3">
               <p>{{ product.content }}</p>
-              <footer class="blockquote-footer text-end">{{ product.description }}</footer>
             </blockquote>
             <div class="h4" v-if="product.price == product.origin_price">{{ product.origin_price | currencyFilter }} 元</div>
             <div class="d-flex justify-content-between align-items-baseline" v-else>
@@ -108,6 +105,7 @@ export default {
       this.isOuterLoading = true;
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products?page=${page}`;
       this.$http.get(api).then((response) => {
+        console.log(response.data.products);
         this.isOuterLoading = false;
         this.products = response.data.products;
         this.paginationObj = response.data.pagination;
