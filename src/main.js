@@ -17,6 +17,7 @@ import App from './App.vue';
 import router from './router';
 import currencyFilter from './filters/currencyFilter';
 import dateFilter from './filters/dateFilter';
+// vee-validation
 import './validation';
 
 library.add(faSpinner, faBoxOpen, faTrashAlt, faReceipt, faListAlt, faAmericanSignLanguageInterpreting, faShoppingCart, faTshirt, faUtensils, faHome);

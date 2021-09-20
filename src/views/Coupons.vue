@@ -42,46 +42,62 @@
     <!-- Modal -->
     <div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
-        <div class="modal-content border-0">
-          <div class="modal-header">
-            <h5 class="modal-title" id="couponModalLabel">
-              優惠卷
-            </h5>
-            <button type="button" class="btn-close" aria-label="Close" @click.prevent="hideModal"></button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-12">
-                <label for="title">標題</label>
-                <input type="text" class="form-control" id="title" placeholder="請輸入標題" v-model="tempCoupon.title">
+        <ValidationObserver v-slot="{ handleSubmit }" ref="form">
+          <form @submit.prevent="handleSubmit(updateCoupon)" novalidate>
+            <div class="modal-content border-0">
+              <div class="modal-header">
+                <h5 class="modal-title" id="couponModalLabel">
+                  優惠卷
+                </h5>
+                <button type="button" class="btn-close" aria-label="Close" @click.prevent="hideModal"></button>
               </div>
-              <div class="col-12 mt-3">
-                <label for="coupon_code">優惠碼</label>
-                <input type="text" class="form-control" id="coupon_code" placeholder="請輸入優惠碼" v-model="tempCoupon.code">
-              </div>
-              <div class="col-12 mt-3">
-                <label for="due_date">到期日</label>
-                <!-- 這裡v-modal先綁到due_date，而非tempCoupon.due_date，因為要先用watch改成時間戳形式才能上傳 -->
-                <input type="date" class="form-control" id="due_date" v-model="due_date">
-              </div>
-              <div class="col-12 mt-3">
-                <label for="discount">折扣百分比</label>
-                <input type="text" class="form-control" id="discount" placeholder="請輸入折扣百分比" v-model="tempCoupon.percent">
-              </div>
-              <div class="col-12 mt-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="is_enabled"
-                    v-model="tempCoupon.is_enabled" true-value="1" false-value="0">
-                  <label class="form-check-label" for="is_enabled">是否啟用</label>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <ValidationProvider name="title" rules="required" v-slot="{ errors, classes }">
+                      <label for="title">標題</label>
+                      <input type="text" class="form-control" :class="classes" id="title" placeholder="請輸入標題" v-model="tempCoupon.title">
+                      <p class="text-danger fw-bold mt-1 mb-1">{{errors[0]}}</p>
+                    </ValidationProvider>
+                  </div>
+                  <div class="col-12 mt-3">
+                    <ValidationProvider name="coupon_code" :rules="{ regex: /^[a-zA-Z0-9]+$/, length: 10 }" v-slot="{ errors, classes }">
+                      <label for="coupon_code">優惠碼</label>
+                      <input type="text" class="form-control" :class="classes" id="coupon_code" placeholder="請輸入優惠碼" v-model="tempCoupon.code" required>
+                      <p class="text-danger fw-bold mt-1 mb-1">{{errors[0]}}</p>
+                    </ValidationProvider>
+                  </div>
+                  <div class="col-12 mt-3">
+                    <ValidationProvider name="due_date" rules="required" v-slot="{ errors, classes }">
+                      <label for="due_date">到期日</label>
+                      <!-- 這裡v-modal先綁到due_date，而非tempCoupon.due_date，因為要先用watch改成時間戳形式才能上傳 -->
+                      <input type="date" class="form-control" :class="classes" id="due_date" v-model="due_date">
+                      <p class="text-danger fw-bold mt-1 mb-1">{{errors[0]}}</p>
+                    </ValidationProvider>
+                  </div>
+                  <div class="col-12 mt-3">
+                    <ValidationProvider name="discount" rules="required|min_value:0" v-slot="{ errors, classes }">
+                      <label for="discount">折扣百分比</label>
+                      <input type="text" class="form-control" :class="classes" id="discount" placeholder="請輸入折扣百分比" v-model="tempCoupon.percent">
+                      <p class="text-danger fw-bold mt-1 mb-1">{{errors[0]}}</p>
+                    </ValidationProvider>
+                  </div>
+                  <div class="col-12 mt-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="is_enabled"
+                        v-model="tempCoupon.is_enabled" true-value="1" false-value="0">
+                      <label class="form-check-label" for="is_enabled">是否啟用</label>
+                    </div>
+                  </div>
                 </div>
               </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" @click.prevent="hideModal">關閉</button>
+                <button type="submit" class="btn btn-primary">確認優惠卷內容</button>
+              </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" @click.prevent="hideModal">關閉</button>
-            <button type="button" class="btn btn-primary" @click.prevent="updateCoupon">確認優惠卷內容</button>
-          </div>
-        </div>
+          </form>
+        </ValidationObserver>
       </div>
     </div>
     <!-- delModal -->
@@ -92,13 +108,13 @@
             <h5 class="modal-title" id="couponModalLabel">
               <span>刪除優惠卷</span>
             </h5>
-            <button type="button" class="btn-close" aria-label="Close" @click.prevent="hideDelModal"></button>
+            <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
             是否刪除 <strong class="text-danger">{{ tempCoupon.title }}</strong> 優惠卷(刪除後將無法恢復)。
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" @click.prevent="hideDelModal">取消</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
             <button type="button" class="btn btn-danger" @click.prevent="updateCoupon">確認刪除</button>
           </div>
         </div>
@@ -113,6 +129,7 @@
 <script>
 import Modal from 'bootstrap/js/dist/modal';
 import Alert from 'bootstrap/js/dist/alert';
+import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import Pagination from '../components/Pagination.vue';
 import dateFilter from '../filters/dateFilter';
 
@@ -144,6 +161,8 @@ export default {
   },
   components: {
     Pagination,
+    ValidationProvider,
+    ValidationObserver,
   },
   created() {
     this.getCoupons();
@@ -190,9 +209,7 @@ export default {
     },
     hideModal() {
       this.myModal.hide();
-    },
-    hideDelModal() {
-      this.delMyModal.hide();
+      this.$refs.form.reset();
     },
     updateCoupon() {
       if (this.modalState === 'add') {
@@ -203,12 +220,7 @@ export default {
             this.getCoupons();
           } else {
             this.hideModal();
-            this.alertMessage = response.data.message;
-            this.showAlert = true;
-            setTimeout(() => {
-              this.showAlert = false;
-            }, 5000);
-            // alert('新增失敗');
+            this.alertShow(response.data.message);
           }
         });
       } else if (this.modalState === 'revise') {
@@ -219,31 +231,28 @@ export default {
             this.getCoupons();
           } else {
             this.hideModal();
-            this.alertMessage = response.data.message;
-            this.showAlert = true;
-            setTimeout(() => {
-              this.showAlert = false;
-            }, 5000);
-            // alert('修改失敗');
+            this.alertShow(response.data.message);
           }
         });
       } else if (this.modalState === 'delete') {
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon/${this.tempCoupon.id}`;
         this.$http.delete(api, { data: this.tempCoupon }).then((response) => {
           if (response.data.success) {
-            this.hideDelModal();
+            this.delMyModal.hide();
             this.getCoupons();
           } else {
-            this.hideDelModal();
-            this.alertMessage = response.data.message;
-            this.showAlert = true;
-            setTimeout(() => {
-              this.showAlert = false;
-            }, 5000);
-            // alert('刪除失敗');
+            this.delMyModal.hide();
+            this.alertShow(response.data.message);
           }
         });
       }
+    },
+    alertShow(msg) {
+      this.alertMessage = msg;
+      this.showAlert = true;
+      setTimeout(() => {
+        this.showAlert = false;
+      }, 5000);
     },
   },
 };

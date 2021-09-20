@@ -2,7 +2,7 @@
   <div>
     <Loading :active.sync="isOuterLoading" loader="bars"></Loading>
     <div class="row mt-3">
-      <div class="col-md-4 mb-4" v-for="item in filterProducts" :key="item.id">
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4" v-for="item in filterProducts" :key="item.id">
         <div class="card border-0 shadow">
           <div :style="{'background-image': `url(${item.imageUrl})`}"
             style="background-size: cover; background-position: center" class="bg-img-height"></div>
@@ -10,10 +10,10 @@
             <span class="badge bg-secondary float-end ml-2">{{item.category}}</span>
             <h5 class="card-title h4">{{item.title}}</h5>
             <p class="card-text">{{item.content}}</p>
-            <div class="h4" v-if="item.price == item.origin_price">{{ item.origin_price | currencyFilter }} 元</div>
+            <div class="h4" v-if="item.price == item.origin_price">{{ item.origin_price | currencyFilter }} </div>
             <div class="d-flex justify-content-between align-items-baseline" v-else>
-              <div><del class="h6">原價 {{ item.origin_price | currencyFilter }} 元</del></div>
-              <div class="h4">現在只要 {{ item.price | currencyFilter }} 元</div>
+              <div><del class="h6">原價 {{ item.origin_price | currencyFilter }} </del></div>
+              <div class="h4">特價 {{ item.price | currencyFilter }} </div>
             </div>
           </div>
           <div class="card-footer d-flex">
