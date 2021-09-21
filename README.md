@@ -1,5 +1,6 @@
 # HOLO購物網後台管理
-一個基於 Vue 2 和 BootStrap 構建的響應式的電商網站後台管理，請用以下帳號進行登陸瀏覽，內已含部分預設內容，且前台的數據資料都會從此帳號中調用
+一個基於 Vue 2 和 BootStrap 構建的響應式的電商網站後台管理，請用以下帳號進行登陸瀏覽，內已含部分預設內容<br/>
+[前台網站](https://github.com/chartlines/e-website-user-interface)的數據資料都會從此帳號中調用
 
  - email：c29939049@gamil.com
  - password: Cb29939049
